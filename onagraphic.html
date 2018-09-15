@@ -4,6 +4,10 @@
 
 <style>
 
+#chart1 {
+  max-width: 700px;
+}
+
 h1 {
   font-family: 'Source Sans Pro';
   font-weight: 700;
@@ -32,11 +36,13 @@ h3 {
 </style>
 <body>
 
-<h1>If you liked ONA, head to MobileMe&You</h1>
-<h2>Percent of speakers at most recent three conferences who also presented at last three ONAs</h2>
-<svg></svg>
-<h3>Source: Conference websites</h3>
-<h3>Note: Data includes most recent three conferences for which speaker lists were available. Some 2018 conferences are still upcoming. Journalism Interactive's speaker list was not available for 2016, so the data includes 2017, 2015 and 2014.</h3>
+<div id="chart1">
+  <h1>If you liked ONA, head to MobileMe&You</h1>
+  <h2>Percent of speakers at most recent three conferences who also presented at last three ONAs</h2>
+  <svg></svg>
+  <h3>Source: Conference websites</h3>
+  <h3>Note: Data includes most recent three conferences for which speaker lists were available. Some 2018 conferences are still upcoming. Journalism Interactive's speaker list was not available for 2016, so the data includes 2017, 2015 and 2014.</h3>
+</div>
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
@@ -111,18 +117,56 @@ var svg = d3.select("svg")
       .attr("font-size", "11px")
       .attr("font-family","Source Sans Pro");
 
+  var xAxis = d3.axisBottom(x).ticks(5).tickSize(0).tickPadding(10) .tickFormat(d => d + "%");
+
   // add the x Axis
   svg.append("g")
+      .attr("class","xaxis")
       .attr("transform", "translate(0," + height + ")")
       .style("font-family","Source Sans Pro")
       .style("font-size","11px")
-      .call(d3.axisBottom(x).ticks(5).tickSize(0).tickPadding(10)   .tickFormat(d => d + "%"));
+      .call(xAxis);
 
   // add the y Axis
   svg.append("g")
       .style("font-family","Source Sans Pro")
       .style("font-size","11px")
       .call(d3.axisLeft(y).tickSize(0).tickPadding(10));
+
+  document.addEventListener("DOMContentLoaded", resize);
+  d3.select(window).on('resize', resize);
+
+  function resize() {
+  	console.log('----resize function----');
+    // update width
+    width = parseInt(d3.select('#chart1').style("width"), 10);
+    width = width - margin.left - margin.right;
+
+    height = parseInt(d3.select('#chart1').style("height"));
+    height = height - margin.top - margin.bottom;
+  	console.log('----resiz width----'+width);
+  	console.log('----resiz height----'+height);
+    // resize the chart
+
+    x.range([0, width]);
+    y.range([height, 0]).padding(0.3);
+
+    //yAxis.ticks(Math.max(height/50, 2));
+    //xAxis.ticks(Math.max(width/50, 2));
+
+    svg.selectAll(".label")
+      .attr("x", (function(d) { return x(d.sales) + 20; }  ))
+      .attr("dy", ".75em");
+
+    d3.select(svg.node().parentNode)
+        .attr('width', (width + margin.left + margin.right) + 'px');
+
+    svg.selectAll('.bar')
+    	.attr("width", function(d) {return x(d.sales); } );
+
+    svg.select('.xaxis').call(xAxis);
+
+  }
 
 //thanks for the help https://bl.ocks.org/caravinden/eb0e5a2b38c8815919290fa838c6b63b
 
