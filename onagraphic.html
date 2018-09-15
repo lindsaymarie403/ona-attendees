@@ -1,8 +1,37 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet">
+
 <style>
 
-.bar { fill: steelblue; }
+.bar {
+  fill: #71b6bc;
+}
+
+h1 {
+  font-family: 'Source Sans Pro';
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 0px;
+}
+
+h2 {
+  font-family: 'Source Sans Pro';
+  font-weight: 400;
+  font-size: 16px;
+  margin-top: 5px;
+  margin-bottom: 0px;
+}
+
+h3 {
+  font-family: 'Source Sans Pro';
+  font-weight: 400;
+  font-size: 11px;
+  margin-top: 5px;
+  margin-bottom: 0px;
+  color: #777777;
+}
+
 
 </style>
 <body>
@@ -10,18 +39,19 @@
 <h1>ONA has most in common with MobileMe&You</h1>
 <h2>Percent of speakers at last three conferences who also presented at last three ONAs</h2>
 <svg></svg>
+<h3>Data includes most recent three conferences for which speaker lists were available. Some 2018 conferences are still upcoming. Journalism Interactive's speaker list was not available for 2016, so the data includes 2017, 2015 and 2014.</h3>
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
 var data = [{"salesperson":"NICAR","sales":2.3},
 {"salesperson":"Computation+Journalism","sales":4.5},
 {"salesperson":"IRE","sales":4.9},
-{"salesperson":"JournalismInteractive","sales":20.7},
+{"salesperson":"Journalism Interactive","sales":20.7},
 {"salesperson":"ISOJ","sales":22.1},
 {"salesperson":"MobileMe&You","sales":40.4}];
 
 // set the dimensions and margins of the graph
-var margin = {top: 20, right: 20, bottom: 40, left: 150},
+var margin = {top: 20, right: 20, bottom: 30, left: 140},
     width = 700 - margin.left - margin.right,
     height = 300 - margin.top - margin.bottom;
 
@@ -63,34 +93,34 @@ var svg = d3.select("svg")
       .attr("y", function(d) { return y(d.salesperson); })
       .attr("height", y.bandwidth());
 
+  svg.selectAll(".text")
+     .data(data)
+      .enter()
+      .append("text")
+      .attr("class","label")
+      .attr("x", (function(d) { return x(d.sales) + 20; }  ))
+      .attr("y", function(d) { return y(d.salesperson) + 10; })
+      .attr("dy", ".75em")
+      .attr("font-size",".8em")
+      .text(function(d) { return d.sales; })
+      .style("text-anchor","middle")
+      .attr("font-size", "11px")
+      .attr("font-family","Source Sans Pro");
+
   // add the x Axis
   svg.append("g")
       .attr("transform", "translate(0," + height + ")")
+      .style("font-family","Source Sans Pro")
+      .style("font-size","11px")
       .call(d3.axisBottom(x));
-
-  svg.append("text")
-      .attr("y", height + (margin.bottom/2))
-      .attr("x", ( (width + margin.left) / 2))
-      .attr("dy", "1em")
-      .attr("text-anchor", "end")
-      .attr("font-size", "12px")
-      .attr("font-family","Poppins")
-      .text("Number Granted");
 
   // add the y Axis
   svg.append("g")
+      .style("font-family","Source Sans Pro")
+      .style("font-size","11px")
       .call(d3.axisLeft(y));
 
-  svg.append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", -margin.left)
-      .attr("x",0 - (height / 3))
-      .attr("dy", "1em")
-      .attr("text-anchor", "end")
-      .attr("font-size", "12px")
-      .attr("font-family","Poppins")
-      .text("Number Granted");
-
+//thanks for the help https://bl.ocks.org/caravinden/eb0e5a2b38c8815919290fa838c6b63b
 
 </script>
 </body>
